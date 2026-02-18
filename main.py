@@ -1,13 +1,9 @@
 from config.credential_prompt import prompt_for_credentials, validate_credentials
-from aws.ec2_scanner import scan_ec2
-from analysis.rule_engine import detect_idle_ec2
-from output.formatter import display_idle_ec2
+from core.orchestrator import CloudOrchestrator
+from output.formatter import display_findings
+from output.summary import calculate_health_score, classify_health
+from ai.advisory import generate_summary_advisory
 
-from aws.ebs_scanner import scan_ebs
-from analysis.rule_engine import detect_unused_ebs
-from output.formatter import display_unused_ebs
-
-# from ai.advisory import generate_advisory
 
 def main():
     creds = prompt_for_credentials()
@@ -19,14 +15,34 @@ def main():
 
     print("\n✅ AWS Account Connected")
 
-    instances = scan_ec2(creds)
-    idle_instances = detect_idle_ec2(instances)
-    display_idle_ec2(idle_instances)
-    
-    
-    volumes = scan_ebs(creds)
-    unused_volumes = detect_unused_ebs(volumes)
-    display_unused_ebs(unused_volumes)
+    orchestrator = CloudOrchestrator(creds)
+    cloud_state = orchestrator.run()
+
+    # ---- Display Findings ----
+    display_findings(cloud_state)
+
+    # ---- Health Score ----
+    score, monthly_loss = calculate_health_score(cloud_state)
+    level = classify_health(score)
+
+    print("\n========== CLOUD HEALTH SUMMARY ==========")
+    print(f"Overall Health Score : {score}%")
+    print(f"Health Status        : {level}")
+    print(f"Estimated Monthly Waste : ${monthly_loss}")
+    print("==========================================\n")
+
+    # ---- AI Summary (ALWAYS RUN FOR NOW) ----
+
+    ai_text = generate_summary_advisory(
+        cloud_state,
+        score,
+        monthly_loss
+    )
+
+    print("\n========== AI CLOUD ADVISORY ==========\n")
+    print(ai_text)
+    print("\n=======================================\n")
+
 
 if __name__ == "__main__":
     main()
