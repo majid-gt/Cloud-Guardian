@@ -1,46 +1,37 @@
 from tabulate import tabulate
 
-def display_idle_ec2(idle_instances):
-    if not idle_instances:
-        print("\n✅ No idle EC2 instances found")
+
+def display_findings(state):
+    findings = state.get_all_findings()
+
+    if state.get_total_findings() == 0:
+        print("\n✅ No issues detected. Cloud looks healthy.\n")
         return
 
-    table = []
-    for inst in idle_instances:
-        table.append([
-            inst["InstanceId"],
-            inst["State"],
-            inst["IdleDays"],
-            f"${inst['MonthlyCostUSD']:.2f}"
-        ])
+    print("\n========== CLOUD FINDINGS ==========\n")
 
-    print("\n⚠️ Idle EC2 Instances Detected:")
-    print(tabulate(
-        table,
-        headers=["Instance ID", "State", "Idle Days", "Monthly Cost ($)"],
-        tablefmt="grid"
-    ))
+    for category, items in findings.items():
 
+        if not items:
+            continue
 
-def display_unused_ebs(unused_volumes):
-    if not unused_volumes:
-        print("\n✅ No unused EBS volumes found")
-        return
+        print(f"\n🔎 Category: {category.upper()}")
 
-    table = []
-    for vol in unused_volumes:
-        table.append([
-            vol["VolumeId"],
-            vol["Size"],
-            vol["VolumeType"],
-            vol["UnusedDays"],
-            f"${vol['MonthlyCostUSD']:.2f}"
-        ])
+        table = []
 
-    print("\n⚠️ Unused EBS Volumes Detected:")
-    print(tabulate(
-        table,
-        headers=["Volume ID", "Size (GB)", "Type", "Unused Days", "Monthly Cost ($)"],
-        tablefmt="grid"
-    ))
+        for f in items:
+            table.append([
+                f["service"],
+                f["resource_id"],
+                f["issue"],
+                f["severity"],
+                f["estimated_monthly_loss"]
+            ])
 
+        print(tabulate(
+            table,
+            headers=["Service", "Resource", "Issue", "Severity", "Est. Monthly Loss ($)"],
+            tablefmt="grid"
+        ))
+
+    print("\n====================================\n")
