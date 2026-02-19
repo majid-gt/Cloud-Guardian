@@ -5,12 +5,17 @@ from output.summary import calculate_health_score, classify_health
 from ai.advisory import generate_summary_advisory
 
 
-def main():
+def run_analysis_pipeline():
+    """
+    Executes full Cloud Guardian analysis pipeline.
+    Used by CLI command: cg analyze
+    """
+
     creds = prompt_for_credentials()
     is_valid, identity = validate_credentials(creds)
 
     if not is_valid:
-        print("Invalid credentials")
+        print("Invalid AWS credentials.")
         return
 
     print("\n✅ AWS Account Connected")
@@ -31,8 +36,7 @@ def main():
     print(f"Estimated Monthly Waste : ${monthly_loss}")
     print("==========================================\n")
 
-    # ---- AI Summary (ALWAYS RUN FOR NOW) ----
-
+    # ---- AI Summary ----
     ai_text = generate_summary_advisory(
         cloud_state,
         score,
@@ -42,7 +46,3 @@ def main():
     print("\n========== AI CLOUD ADVISORY ==========\n")
     print(ai_text)
     print("\n=======================================\n")
-
-
-if __name__ == "__main__":
-    main()
