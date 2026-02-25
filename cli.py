@@ -5,6 +5,7 @@ from rich.text import Text
 from pyfiglet import Figlet
 import argparse
 import os
+from commands.report import run_report
 
 from commands.analyze import run_analyze
 from commands.init import run_init
@@ -63,6 +64,9 @@ def show_commands():
 def main():
     parser = argparse.ArgumentParser(prog="cg", add_help=False)
     subparsers = parser.add_subparsers(dest="command")
+    
+    report_parser = subparsers.add_parser("report")
+    report_parser.add_argument("--format", choices=["json", "html"], default="json")
 
     subparsers.add_parser("init")
     subparsers.add_parser("analyze")
@@ -77,6 +81,8 @@ def main():
         run_analyze()
     elif args.command == "version":
         run_version()
+    elif args.command == "report":
+        run_report(args.format)
     elif args.command == "help":
         professional_banner()
         show_commands()

@@ -2,6 +2,14 @@
 __pycache__/
 *.pyc
 .env
+*.pyc
+*.pyo
+*.pyd
+
+# Packaging
+*.egg-info/
+dist/
+build/
 
 # Node
 node_modules/
@@ -14,9 +22,13 @@ node_modules/
 
 # OS
 .DS_Store
+Thumbs.db
+
 # AWS credentials
 *.pem
 *.key
 *.env
 aws_access_keys*
 credentials
+
+*.html

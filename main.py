@@ -5,7 +5,7 @@ from output.summary import calculate_health_score, classify_health
 from ai.advisory import generate_summary_advisory
 
 
-def run_analysis_pipeline():
+def run_analysis_pipeline(return_state=False):
     """
     Executes full Cloud Guardian analysis pipeline.
     Used by CLI command: cg analyze
@@ -46,3 +46,6 @@ def run_analysis_pipeline():
     print("\n========== AI CLOUD ADVISORY ==========\n")
     print(ai_text)
     print("\n=======================================\n")
+    
+    if return_state:
+        return cloud_state
