@@ -5,15 +5,32 @@ from output.summary import calculate_health_score, classify_health
 from ai.advisory import generate_summary_advisory
 
 
-def main():
-    creds = prompt_for_credentials()
-    is_valid, identity = validate_credentials(creds)
+def run_analysis_pipeline(hardware_auth=False, return_state=False):
+    """
+    Executes full Cloud Guardian analysis pipeline.
+    Used by CLI command: cg analyze
+    """
 
-    if not is_valid:
-        print("Invalid credentials")
-        return
+    from core.hardware.vault_client import VaultClient
+
+    if hardware_auth:
+        try:
+            vault = VaultClient()
+            creds = vault.unlock()
+        except Exception as e:
+            print(f"[Hardware Auth Error] {str(e)}")
+            return
+    else:
+        creds = prompt_for_credentials()
+        is_valid, identity = validate_credentials(creds)
+        if not is_valid:
+            print("Invalid AWS credentials.")
+            return
 
     print("\n✅ AWS Account Connected")
+    
+    if hardware_auth:
+        print("🔐 Using ESP32 Hardware Vault Authentication\n")
 
     orchestrator = CloudOrchestrator(creds)
     cloud_state = orchestrator.run()
@@ -31,8 +48,7 @@ def main():
     print(f"Estimated Monthly Waste : ${monthly_loss}")
     print("==========================================\n")
 
-    # ---- AI Summary (ALWAYS RUN FOR NOW) ----
-
+    # ---- AI Summary ----
     ai_text = generate_summary_advisory(
         cloud_state,
         score,
@@ -42,7 +58,6 @@ def main():
     print("\n========== AI CLOUD ADVISORY ==========\n")
     print(ai_text)
     print("\n=======================================\n")
-
-
-if __name__ == "__main__":
-    main()
+    
+    if return_state:
+        return cloud_state
