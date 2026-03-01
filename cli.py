@@ -53,6 +53,7 @@ def show_commands():
 
     console.print("  [cyan]init[/cyan]       Initialize configuration")
     console.print("  [cyan]analyze[/cyan]    Run full cloud audit")
+    console.print("  [cyan]analyze --hardware-auth[/cyan]    Use ESP32 hardware vault for audit")
     console.print("  [cyan]fix[/cyan]        Remediate detected issues")
     console.print("  [cyan]report[/cyan]     Generate audit report")
     console.print("  [cyan]version[/cyan]    Show version info")
@@ -69,16 +70,26 @@ def main():
     report_parser.add_argument("--format", choices=["json", "html"], default="json")
 
     subparsers.add_parser("init")
-    subparsers.add_parser("analyze")
+    analyze_parser = subparsers.add_parser("analyze")
+    analyze_parser.add_argument(
+        "--hardware-auth",
+        action="store_true",
+        help="Use ESP32 hardware vault for AWS credentials"
+    )
     subparsers.add_parser("version")
     subparsers.add_parser("help")
+    subparsers.add_parser("change-password")
 
     args = parser.parse_args()
 
     if args.command == "init":
         run_init()
     elif args.command == "analyze":
-        run_analyze()
+        run_analyze(hardware_auth=args.hardware_auth)
+    elif args.command == "change-password":
+        from core.hardware.vault_client import VaultClient
+        vault = VaultClient()
+        vault.change_password()
     elif args.command == "version":
         run_version()
     elif args.command == "report":
