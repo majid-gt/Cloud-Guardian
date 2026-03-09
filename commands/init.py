@@ -18,3 +18,5 @@ def run_init():
 
     print("Cloud Guardian initialized.")
     print(f"Config created at {config_file}")
+    
+    #Demo
