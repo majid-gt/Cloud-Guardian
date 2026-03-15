@@ -1,34 +1,48 @@
-# Python
+# Python cache
 __pycache__/
-*.pyc
-.env
 *.pyc
 *.pyo
 *.pyd
 
-# Packaging
-*.egg-info/
-dist/
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Build files
 build/
-
-# Node
-node_modules/
-
-# VS Code
-.vscode/
+dist/
+*.egg-info/
 
 # Logs
 *.log
 
-# OS
+# Environment variables
+.env
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# AWS credentials
-*.pem
-*.key
-*.env
-aws_access_keys*
-credentials
+# VSCode
+.vscode/
 
-*.html
+# Python runtime
+.python-version
+
+# Temporary files
+*.tmp
+*.temp
+
+# Generated reports
+cloudguardian_report_*.html
+cloudguardian_report_*.json
+cloudguardian_report_*.pdf
+
+# Chart images used for PDF generation
+*.png
+
+# Arduino build artifacts
+*.bin
+*.elf
+*.hex
