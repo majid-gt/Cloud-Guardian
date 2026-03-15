@@ -10,6 +10,15 @@ def display_findings(state):
 
     print("\n========== CLOUD FINDINGS ==========\n")
 
+    # Severity weights for priority calculation
+    severity_weight = {
+        "CRITICAL": 5,
+        "HIGH": 4,
+        "MEDIUM": 3,
+        "LOW": 2,
+        "INFO": 1
+    }
+
     for category, items in findings.items():
 
         if not items:
@@ -17,15 +26,24 @@ def display_findings(state):
 
         print(f"\n🔎 Category: {category.upper()}")
 
+        # Sort findings by priority (severity × cost impact)
+        sorted_items = sorted(
+            items,
+            key=lambda x: severity_weight.get(
+                x["severity"].upper(), 1
+            ) * x.get("estimated_monthly_loss", 0),
+            reverse=True
+        )
+
         table = []
 
-        for f in items:
+        for f in sorted_items:
             table.append([
                 f["service"],
                 f["resource_id"],
                 f["issue"],
                 f["severity"],
-                f["estimated_monthly_loss"]
+                f.get("estimated_monthly_loss", 0)
             ])
 
         print(tabulate(

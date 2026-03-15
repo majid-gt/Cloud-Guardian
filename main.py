@@ -13,14 +13,18 @@ def run_analysis_pipeline(hardware_auth=False, return_state=False):
 
     from core.hardware.vault_client import VaultClient
 
-    if hardware_auth:
-        try:
-            vault = VaultClient()
-            creds = vault.unlock()
-        except Exception as e:
-            print(f"[Hardware Auth Error] {str(e)}")
-            return
-    else:
+    creds = None
+
+    # Try hardware vault first
+    try:
+        vault = VaultClient()
+        creds = vault.unlock()
+        print("🔐 Using ESP32 Hardware Vault Authentication")
+    except Exception:
+        pass
+
+    # If vault not available → fallback to manual credentials
+    if not creds:
         creds = prompt_for_credentials()
         is_valid, identity = validate_credentials(creds)
         if not is_valid:
@@ -60,4 +64,4 @@ def run_analysis_pipeline(hardware_auth=False, return_state=False):
     print("\n=======================================\n")
     
     if return_state:
-        return cloud_state
+        return cloud_state, creds

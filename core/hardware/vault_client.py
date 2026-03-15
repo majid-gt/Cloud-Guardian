@@ -32,6 +32,18 @@ class VaultClient:
             "region": response["region"]
         }
         
+    def hardware_status(self):
+        port = self.serial_manager.find_esp32()
+
+        if not port:
+            print("❌ ESP32 Vault: Not detected")
+            return
+
+        print("✅ ESP32 Vault: Connected")
+        print(f"Port: {port}")
+        print("Status: Ready")
+
+        
     def change_password(self):
         port = self.serial_manager.find_esp32()
         if not port:

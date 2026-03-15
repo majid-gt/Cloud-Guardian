@@ -32,3 +32,4 @@ aws_access_keys*
 credentials
 
 *.html
+*.pdf

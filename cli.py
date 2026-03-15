@@ -56,6 +56,9 @@ def show_commands():
     console.print("  [cyan]analyze --hardware-auth[/cyan]    Use ESP32 hardware vault for audit")
     console.print("  [cyan]fix[/cyan]        Remediate detected issues")
     console.print("  [cyan]report[/cyan]     Generate audit report")
+    console.print("  [cyan]analyze --report html[/cyan]    Generate HTML report")
+    console.print("  [cyan]analyze --report pdf[/cyan]    Generate PDF report")
+    console.print("  [cyan]analyze --report json[/cyan]    Generate JSON report")
     console.print("  [cyan]version[/cyan]    Show version info")
     console.print("  [cyan]help[/cyan]       Display help menu\n")
 
@@ -67,7 +70,11 @@ def main():
     subparsers = parser.add_subparsers(dest="command")
     
     report_parser = subparsers.add_parser("report")
-    report_parser.add_argument("--format", choices=["json", "html"], default="json")
+    report_parser.add_argument("--format", choices=["json", "html", "pdf"], default="json")
+    
+    hardware_parser = subparsers.add_parser("hardware")
+    hardware_parser.add_argument("action", choices=["status"])
+
 
     subparsers.add_parser("init")
     analyze_parser = subparsers.add_parser("analyze")
@@ -79,6 +86,8 @@ def main():
     subparsers.add_parser("version")
     subparsers.add_parser("help")
     subparsers.add_parser("change-password")
+    subparsers.add_parser("fix")
+
 
     args = parser.parse_args()
 
@@ -97,6 +106,16 @@ def main():
     elif args.command == "help":
         professional_banner()
         show_commands()
+    elif args.command == "fix":
+        from commands.fix import run_fix
+        run_fix()
+    elif args.command == "hardware":
+        from core.hardware.vault_client import VaultClient
+        vault = VaultClient()
+
+        if args.action == "status":
+            vault.hardware_status()
+
     else:
         professional_banner()
         show_commands()
