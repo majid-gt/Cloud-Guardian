@@ -35,7 +35,7 @@ def professional_banner():
 
     console.print(
         Align.center(
-            "[bold bright_green]AI-Assisted Cloud Audit & Optimization Engine[/bold bright_green]"
+            "[bold bright_green]An AI-Assisted Edge-Based AWS Audit & Optimization System[/bold bright_green]"
         )
     )
 
@@ -51,14 +51,14 @@ def professional_banner():
 def show_commands():
     console.print("\n[bold bright_cyan]Available Commands:[/bold bright_cyan]\n")
 
-    console.print("  [cyan]init[/cyan]       Initialize configuration")
+    # console.print("  [cyan]init[/cyan]       Initialize configuration")
     console.print("  [cyan]analyze[/cyan]    Run full cloud audit")
     console.print("  [cyan]analyze --hardware-auth[/cyan]    Use ESP32 hardware vault for audit")
     console.print("  [cyan]fix[/cyan]        Remediate detected issues")
     console.print("  [cyan]report[/cyan]     Generate audit report")
-    console.print("  [cyan]analyze --report html[/cyan]    Generate HTML report")
-    console.print("  [cyan]analyze --report pdf[/cyan]    Generate PDF report")
-    console.print("  [cyan]analyze --report json[/cyan]    Generate JSON report")
+    console.print("  [cyan]report --format html[/cyan]    Generate HTML report")
+    console.print("  [cyan]report --format pdf[/cyan]    Generate PDF report")
+    console.print("  [cyan]report --format json[/cyan]    Generate JSON report")
     console.print("  [cyan]version[/cyan]    Show version info")
     console.print("  [cyan]help[/cyan]       Display help menu\n")
 

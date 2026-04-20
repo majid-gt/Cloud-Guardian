@@ -1,9 +1,13 @@
+import os
 import json
 from datetime import datetime
 from main import run_analysis_pipeline
 from rich.console import Console
 
 console = Console()
+
+REPORT_DIR = r"D:\CloudGuardianReports"
+os.makedirs(REPORT_DIR, exist_ok=True)
 
 
 def run_report(format_type="json"):
@@ -28,8 +32,10 @@ def generate_json_report(state):
         "total_findings": state.get_total_findings()
     }
 
-    filename = f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-
+    filename = os.path.join(
+        REPORT_DIR,
+        f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(filename, "w") as f:
         json.dump(report_data, f, indent=4, default=str)
 
@@ -38,8 +44,10 @@ def generate_json_report(state):
 
 def generate_html_report(state):
 
-    filename = f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
-
+    filename = os.path.join(
+        REPORT_DIR,
+        f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+    )
     total_findings = state.get_total_findings()
 
     severity_counts = {"CRITICAL":0,"HIGH":0,"MEDIUM":0,"LOW":0}
@@ -280,8 +288,10 @@ import matplotlib.pyplot as plt
 
 def generate_pdf_report(state):
 
-    filename = f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-
+    filename = os.path.join(
+        REPORT_DIR,
+        f"cloudguardian_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    )
     styles = getSampleStyleSheet()
 
     elements = []
@@ -326,9 +336,8 @@ def generate_pdf_report(state):
 
     # ---------- CREATE CHARTS ----------
 
-    severity_chart = "severity_chart.png"
-    service_chart = "service_chart.png"
-
+    severity_chart = os.path.join(REPORT_DIR, "severity_chart.png")
+    service_chart = os.path.join(REPORT_DIR, "service_chart.png")
     # Severity chart
     plt.figure(figsize=(4,3))
     plt.bar(severity_counts.keys(), severity_counts.values(), color=["red","orange","gold","green"])
