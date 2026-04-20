@@ -35,7 +35,7 @@ def professional_banner():
 
     console.print(
         Align.center(
-            "[bold bright_green]AI-Assisted Cloud Audit & Optimization Engine[/bold bright_green]"
+            "[bold bright_green]An AI-Assisted Edge-Based AWS Audit & Optimization System[/bold bright_green]"
         )
     )
 
